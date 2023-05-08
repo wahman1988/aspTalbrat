@@ -9,6 +9,7 @@ namespace AspTalbrat.Models
     {
         public int Id { get; set; }
         public DateTime Date { get; set; } = DateTime.Now;
+        [Display(Name = "Employe")]
         public int EmployeeId { get; set; }
         public Employee? Employee { get; set; }
         [Required]
