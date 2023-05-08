@@ -1,0 +1,27 @@
+﻿@model IEnumerable<AspTalbrat.Models.Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<main class="content">
+    <h1 class="h3 mb-3">Blank Page</h1>
+        <div class="row">
+        @foreach (var item in Model)
+        {
+                <div class="col-md-3 ">
+                    <div class="card">
+                        <div class="card-body">
+                        <a></a>
+                        <h5 class="card-title mb-1 w-100 "><strong>@item.Name</strong></h5>
+                       <!-- <h1 class="mt-1 mb-3">@item.Price.ToString("0.00")</h1> -->
+                        <img src="/@item.ImageUrl" class="mb-1"/>
+                        <hr/>
+                                <div class="mb-1">
+                            <a class="btn btn-outline-info w-100 btn-lg" asp-controller="Home" asp-action="Order" asp-route-id="@item.Id">ORDER</a>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+        }
+
+        </div>
+</main>

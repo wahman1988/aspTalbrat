@@ -1,0 +1,22 @@
+﻿
+<nav id="sidebar" class="sidebar">
+	<div class="sidebar-content js-simplebar">
+		<a class="sidebar-brand"  asp-action="Index" asp-controller="Home">
+			<span class="align-middle">ASP WEB APP</span>
+		</a>
+
+		<ul class="sidebar-nav">
+			<li class="sidebar-item">
+				<a data-target="#ui" data-toggle="collapse" class="sidebar-link collapsed">
+					<span class="align-middle">Menu</span>
+				</a>
+				<ul id="ui" class="sidebar-dropdown  collapse list-unstyled " data-parent="#sidebar">
+					<li class="sidebar-item "><a class="sidebar-link" asp-action="Index" asp-controller="Products">Products</a></li>
+					<li class="sidebar-item"><a class="sidebar-link" asp-action="Index" asp-controller="Categories">Categories</a></li>
+				</ul>
+			</li>
+		</ul>
+
+	</div>
+</nav>
+
