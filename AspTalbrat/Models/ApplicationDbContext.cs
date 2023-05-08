@@ -10,5 +10,7 @@ namespace AspTalbrat.Models
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Avance> Avances { get; set; }
     }
 }
