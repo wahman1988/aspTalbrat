@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
+using AspTalbrat.ViewModels;
 
 namespace AspTalbrat.Controllers
 {
@@ -34,8 +35,16 @@ namespace AspTalbrat.Controllers
         // GET: Avances
         public async Task<IActionResult> Index()
         {
+            var  total = _context.Avances.Sum(a => (float)a.Montant);
+            /*
+            decimal total = 0;
+            foreach (Avance item in _context.Avances.ToList()) {
+                total = item.Montant + total;
+            }
+            */
+            ViewData["Total"] = total.ToString("# ##0.00"); 
             var applicationDbContext = _context.Avances.Include(a => a.Employee);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.OrderByDescending(a=>a.Date).ToListAsync());
         }
 
         // GET: Avances/Details/5
@@ -57,6 +66,32 @@ namespace AspTalbrat.Controllers
             return View(avance);
         }
 
+
+        public IActionResult Etat()
+        {
+            List<EtatViewModel> etat = new List<EtatViewModel>();
+            foreach (Employee item in _context.Employees.ToList())
+            {
+                var total = _context.Avances.Where(emp=>emp.EmployeeId == item.Id).Sum(a => (float)a.Montant);
+                etat.Add(new EtatViewModel
+                {
+                       employee = item.Name,
+                       total =  total.ToString("#,##0.00")
+
+                });
+            }
+            etat = etat.OrderByDescending(i=> float.Parse(i.total)).ToList();
+           // var total = _context.Avances.Sum(a => (float)a.Montant);
+            /*
+            decimal total = 0;
+            foreach (Avance item in _context.Avances.ToList()) {
+                total = item.Montant + total;
+            }
+            */
+            
+            var applicationDbContext = _context.Avances.Include(a => a.Employee);
+            return View(etat);
+        }
         // GET: Avances/Create
         public IActionResult Create()
         {

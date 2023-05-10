@@ -1,0 +1,49 @@
+﻿@model IEnumerable<EtatViewModel>
+
+@{
+    ViewData["Title"] = "Etat";
+}
+
+<main class="content">
+    <div class="card">
+        <div class="card-body">
+            <h1>Etat</h1>
+            <div>
+                  <hr />
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Employe
+                                </th>
+                                <th>
+                                    Total
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.employee
+                                    </td>
+                                    <td>
+                                        @item.total
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+              
+            </div>
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+
+        </div>
+    </div>
+</main>

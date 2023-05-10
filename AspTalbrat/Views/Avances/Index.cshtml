@@ -7,64 +7,71 @@
 
 
 <main class="content">
+  
     <div class="card">
         <div class="card-body">
-            <h1>Index</h1>
+            <h1 class="mt-1 mb-3">Total : @ViewData["Total"]
+                <a asp-action="Etat" class="text-md">Etat</a>
+            </h1>
+
+            <h1>List</h1>
 
             <p>
                 <a asp-action="Create">Create New</a>
             </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Id)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Date)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Employee)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Montant)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Note)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                @item.Id
-                            </td>
-                            <td>
-                                @item.Date.ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Employee.Name)
-                            </td>
-                   
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Montant)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Note)
-                            </td>
-                       
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                                <a asp-action="PrintAvance" asp-route-id="@item.Id">Print</a>
-                            </td>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Id)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Date)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Employee)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Montant)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Note)
+                            </th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Id
+                                </td>
+                                <td>
+                                    @item.Date.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Employee.Name)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Montant)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Note)
+                                </td>
+
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                                    <a asp-action="PrintAvance" asp-route-id="@item.Id">Print</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+           </div>
         </div>
     </div>
 </main>
