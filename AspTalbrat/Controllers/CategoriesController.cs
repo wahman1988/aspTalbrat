@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AspTalbrat.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspTalbrat.Controllers
 {
-    public class CategoriesController : Controller
+	[Authorize]
+	public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 

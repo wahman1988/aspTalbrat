@@ -1,4 +1,5 @@
 ﻿using AspTalbrat.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ using System.Drawing.Printing;
 
 namespace AspTalbrat.Controllers
 {
-    public class HomeController : Controller
+	[Authorize]
+	public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
@@ -62,6 +64,7 @@ namespace AspTalbrat.Controllers
 
         }
 
+       
         public async Task<IActionResult> Index()
         {
             

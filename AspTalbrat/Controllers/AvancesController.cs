@@ -12,6 +12,7 @@ using System.Drawing.Printing;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
 using AspTalbrat.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspTalbrat.Controllers
 {
@@ -44,7 +45,7 @@ namespace AspTalbrat.Controllers
             */
             ViewData["Total"] = total.ToString("# ##0.00"); 
             var applicationDbContext = _context.Avances.Include(a => a.Employee);
-            return View(await applicationDbContext.OrderByDescending(a=>a.Date).ToListAsync());
+            return View(await applicationDbContext.OrderByDescending(a=>a.Date).ThenByDescending(a => a.Id).ToListAsync());
         }
 
         // GET: Avances/Details/5
@@ -116,8 +117,9 @@ namespace AspTalbrat.Controllers
             return View(avance);
         }
 
-        // GET: Avances/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+		// GET: Avances/Edit/5
+		[Authorize]
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Avances == null)
             {
@@ -133,10 +135,11 @@ namespace AspTalbrat.Controllers
             return View(avance);
         }
 
-        // POST: Avances/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		// POST: Avances/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[Authorize]
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Note,Montant,EmployeeId,Date")] Avance avance)
         {
@@ -169,8 +172,9 @@ namespace AspTalbrat.Controllers
             return View(avance);
         }
 
-        // GET: Avances/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		// GET: Avances/Delete/5
+		[Authorize]
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Avances == null)
             {
@@ -188,8 +192,9 @@ namespace AspTalbrat.Controllers
             return View(avance);
         }
 
-        // POST: Avances/Delete/5
-        [HttpPost, ActionName("Delete")]
+		[Authorize]
+		// POST: Avances/Delete/5
+		[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

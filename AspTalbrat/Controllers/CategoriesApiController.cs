@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AspTalbrat.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspTalbrat.Controllers
 {
-    [Route("api/[controller]")]
+
+	[Route("api/[controller]")]
     [ApiController]
     public class CategoriesApiController : ControllerBase
     {

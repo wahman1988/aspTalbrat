@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using AspTalbrat.Models;
 using AspTalbrat.ViewModels;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspTalbrat.Controllers
 {
-    public class ProductsController : Controller
+	[Authorize]
+	public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private new List<string> _allowedExtenstions = new List<string> { ".jpg", ".png" };
