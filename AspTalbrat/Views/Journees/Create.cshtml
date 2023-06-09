@@ -1,0 +1,124 @@
+﻿@model AspTalbrat.Models.Journee
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="container mt-5 " x-data="state()">
+    <div class="row ">
+        <div class="col-md-6 ">
+
+            <form action="">
+                @Html.AntiForgeryToken()
+                <div class="card mb-1">
+                    <div class="card-body">
+
+                        <div class="mb-3">
+                            <label for="journee" class="form-label">Journee</label>
+                            <input type="number" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Note</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <hr>
+                        <h5 class="card-title">Details</h5>
+                        <div class="row g-1">
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="libelle0">
+                            </div>
+                            <div class="col-sm">
+                                <div class="input-group mb-2">
+                                    <input type="number" class="form-control" name="montant0" value="0" />
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <template x-for="(field, index) in fields" :key="index">
+                            <div class="row g-1">
+                                <div class="col-sm-8">
+                                    <input x-model="field.libelle" type="text" class="form-control"
+                                           name="`libelle${index+1}`">
+                                </div>
+                                <div class="col-sm">
+                                    <div class="input-group mb-2">
+                                        <input x-model="field.montant" type="number" class="form-control"
+                                               name="`montant${index+1}`" />
+                                        <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+                                                @@click="removeField(index)">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <a href="javascript:void(0)"
+                           @@click="addNewField()">
+                            Add Row
+                        </a>
+                        <hr />
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-outline-primary float-end" @@click.prevent="postData()">Save</button>
+                        </div>
+
+
+                        <div>
+                            <a asp-action="Index">Back to List</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const csrfToken = document.getElementsByName('__RequestVerificationToken')[0].value;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        };
+        function state() {
+            return {
+                fields: [],
+                addNewField() {
+                    this.fields.push({
+                        libelle: '',
+                        montant: 0
+                    });
+
+                },
+                postData() {
+                    axios.post('/Journees/Create', {
+                        firstName: 'Fred',
+                        lastName: 'Pierrafeu'
+                    },config)
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                removeField(index) {
+                    console.log(index)
+                    if (index > -1) {
+                        this.fields.splice(index, 1);
+                    }
+                }
+            }
+        }
+    </script>
+}
+
+

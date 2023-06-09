@@ -13,5 +13,7 @@ namespace AspTalbrat.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Avance> Avances { get; set; }
+        public DbSet<Journee> Journees { get; set; }
+        public DbSet<JourneePaiement> Paiements { get; set; }
     }
 }
