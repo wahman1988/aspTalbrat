@@ -6,16 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AspTalbrat.Models;
+using System.Drawing.Printing;
+using System.Drawing;
 
 namespace AspTalbrat.Controllers
 {
     public class JourneesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PrintDocument printDoc = new PrintDocument();
+        private readonly IConfiguration _configuration;
+        private Journee selectedJournee;
 
-        public JourneesController(ApplicationDbContext context)
+        public JourneesController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: Journees
@@ -191,5 +197,119 @@ namespace AspTalbrat.Controllers
         {
             return (_context.Journees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public async Task<IActionResult> PrintJournee(int id)
+        {
+            var printer = _configuration.GetValue<String>("Printer");
+            // Set the document to print to the default printer
+            //  printDoc.PrinterSettings.PrinterName = PrinterSettings.InstalledPrinters[0];
+            printDoc.PrinterSettings.PrinterName = printer;
+            // Add an event handler to print the invoice
+            printDoc.PrintPage += new PrintPageEventHandler(PrintPage);
+
+
+            //string wwwrootPath = _env.WebRootPath;
+            if (id == null || _context.Journees == null)
+            {
+                return NotFound();
+            }
+
+            var journee = await _context.Journees.Include(j => j.Paiements).FirstOrDefaultAsync(a => a.Id == id);
+            if (journee == null)
+            {
+                return NotFound();
+            }
+            selectedJournee = journee;
+
+
+
+
+            // Print the invoice
+            printDoc.Print();
+            return RedirectToAction("Index", "Journees");
+
+        }
+        private void PrintPage(object sender, PrintPageEventArgs e)
+        {
+
+
+
+            var f8 = new Font("Calibri", 8, FontStyle.Regular);
+            var f10 = new Font("Calibri", 10, FontStyle.Regular);
+            var f10b = new Font("Calibri", 10, FontStyle.Bold);
+            var f14 = new Font("Calibri", 14, FontStyle.Bold);
+
+
+
+            int leftmargin = printDoc.DefaultPageSettings.Margins.Left;
+            int centermargin = printDoc.DefaultPageSettings.PaperSize.Width / 2;
+            int rightmargin = printDoc.DefaultPageSettings.PaperSize.Width;
+
+            StringFormat right = new StringFormat();
+            StringFormat center = new StringFormat();
+
+
+            right.Alignment = StringAlignment.Far;
+            center.Alignment = StringAlignment.Center;
+
+
+            string line;
+
+            line = "---------------------------------------------------------------------------------";
+
+            //e.Graphics.DrawString("DATE : ", f14, Brushes.Black, leftmargin, 3, center);
+            //e.Graphics.DrawString("NOM  : ", f14, Brushes.Black, leftmargin, 25, center);
+            e.Graphics.DrawString("BON D'AVANCE", f14, Brushes.Black, centermargin, 3, center);
+            e.Graphics.DrawString($"REF : {selectedJournee.Id}", new Font("Arial", 12), Brushes.Black, new PointF(0, 40));
+            e.Graphics.DrawString($"DATE : {selectedJournee.Date.ToString("dd/MM/yyyy")}", new Font("Arial", 12), Brushes.Black, new PointF(0, 80));
+           // e.Graphics.DrawString($"NOM  : {selectedJournee.Employee.Name}", new Font("Arial", 12), Brushes.Black, new PointF(0, 120));
+            //e.Graphics.DrawString($"MONTANT  : {selectedJournee.Montant.ToString("#,##0.00")}", new Font("Arial", 12), Brushes.Black, new PointF(0, 160));
+            e.Graphics.DrawString($"NOTES  : {selectedJournee.Note}", new Font("Arial", 12), Brushes.Black, new PointF(0, 200));
+            e.Graphics.DrawString("SIGNATURE", f14, Brushes.Black, centermargin, 240, center);
+            e.Graphics.DrawString("************", f14, Brushes.Black, centermargin, 340, center);
+
+
+
+            /*
+            var f8 = new Font("Calibri", 8, FontStyle.Regular);
+            var f10 = new Font("Calibri", 10, FontStyle.Regular);
+            var f10b = new Font("Calibri", 10, FontStyle.Bold);
+            var f14 = new Font("Calibri", 14, FontStyle.Bold);
+
+
+            int leftmargin = printDoc.DefaultPageSettings.Margins.Left;
+            int centermargin = printDoc.DefaultPageSettings.PaperSize.Width / 2;
+            int rightmargin = printDoc.DefaultPageSettings.PaperSize.Width;
+
+            StringFormat right = new StringFormat();
+            StringFormat center = new StringFormat();
+
+            right.Alignment = StringAlignment.Far;
+            center.Alignment = StringAlignment.Center;
+
+            string line;
+
+            line = "---------------------------------------------------------------------------------";
+            e.Graphics.DrawString("CAFE & REST BANDL", f14, Brushes.Black, centermargin, 3, center);
+            e.Graphics.DrawString("STATION WINXO IMINTANOUT", f10, Brushes.Black, centermargin, 25, center);
+            e.Graphics.DrawString("06 67 96 35 53", f10, Brushes.Black, centermargin, 40, center);
+     
+
+            int height = 0;
+            long i;
+
+            string qte;
+            string total;
+            double countprice = 0;
+
+            e.Graphics.DrawString("Qte", f10, Brushes.Black, 0, 100);
+            e.Graphics.DrawString("Article", f10, Brushes.Black, 50, 100);
+            // e.Graphics.DrawString("Total", f10, Brushes.Black, 180, 80);
+            e.Graphics.DrawString("Total", f10, Brushes.Black, rightmargin, 100, right);
+            */
+
+        }
+
+
     }
 }
