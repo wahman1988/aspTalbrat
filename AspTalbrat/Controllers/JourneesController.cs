@@ -54,12 +54,15 @@ namespace AspTalbrat.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-       // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Numero,Note")] Journee journee)
+       [ValidateAntiForgeryToken]
+        public async Task<JsonResult> Create([FromBody] JourneeViewModel data)
         {
             //using var bodyReader = new StreamReader(HttpContext.Request.Body);
             
-            return Ok(HttpContext.Request.Body);
+            if (!ModelState.IsValid)
+                return new JsonResult(new {errors = "errors",details = ModelState });
+           
+            return new JsonResult(data);
             /*
             if (ModelState.IsValid)
             

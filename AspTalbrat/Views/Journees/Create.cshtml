@@ -11,28 +11,21 @@
                 @Html.AntiForgeryToken()
                 <div class="card mb-1">
                     <div class="card-body">
-
+                        <template x-if="errors">
+                            <div class="alert alert-danger p-2" role="alert">
+                                ERRORS
+                            </div>
+                        </template>
                         <div class="mb-3">
                             <label for="journee" class="form-label">Journee</label>
-                            <input type="number" class="form-control">
+                            <input x-model="numero" type="number" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="notes" class="form-label">Note</label>
-                            <textarea class="form-control"></textarea>
+                            <textarea x-model="note" class="form-control"></textarea>
                         </div>
                         <hr>
                         <h5 class="card-title">Details</h5>
-                        <div class="row g-1">
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="libelle0">
-                            </div>
-                            <div class="col-sm">
-                                <div class="input-group mb-2">
-                                    <input type="number" class="form-control" name="montant0" value="0" />
-                                    <div></div>
-                                </div>
-                            </div>
-                        </div>
                         <template x-for="(field, index) in fields" :key="index">
                             <div class="row g-1">
                                 <div class="col-sm-8">
@@ -82,15 +75,25 @@
     }
     <script>
         const csrfToken = document.getElementsByName('__RequestVerificationToken')[0].value;
+
         const config = {
             headers: {
+                "HELO": "hello",
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             }
         };
+
         function state() {
             return {
-                fields: [],
+                errors: false,
+                numero: 0,
+                note: '',
+                fields: [
+                    {
+                        libelle: 'ESP',
+                        montant: 0
+                    }],
                 addNewField() {
                     this.fields.push({
                         libelle: '',
@@ -98,13 +101,33 @@
                     });
 
                 },
+                resetData() {
+                    this.numero = '',
+                    this.note ='',
+                        this.fields = [
+                            {
+                                libelle: 'ESP',
+                                montant: 0
+                            }]
+
+                },
                 postData() {
+                    const self = this;
                     axios.post('/Journees/Create', {
-                        firstName: 'Fred',
-                        lastName: 'Pierrafeu'
-                    },config)
+                        Numero: self.numero,
+                        Note: self.note,
+                        Paiements: self.fields
+
+                    }, config)
                         .then(function (response) {
-                            console.log(response);
+                            console.log(response.data);
+                            if (response.data['errors'] == "errors") {
+                                self.errors = true
+
+                            } else {
+                                self.errors = false
+                                self.resetData()
+                            }
                         })
                         .catch(function (error) {
                             console.log(error);

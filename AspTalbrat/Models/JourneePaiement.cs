@@ -8,6 +8,7 @@ namespace AspTalbrat.Models
     public class JourneePaiement
     {
         public int Id { get; set; }
+        [Required]
         public string Libelle { get; set; }
         public int JourneeId { get; set; }
         public Journee? Journee { get; set; }
