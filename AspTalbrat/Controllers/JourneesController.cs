@@ -21,9 +21,9 @@ namespace AspTalbrat.Controllers
         // GET: Journees
         public async Task<IActionResult> Index()
         {
-              return _context.Journees != null ? 
-                          View(await _context.Journees.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Journees'  is null.");
+            return _context.Journees != null ?
+                        View(await _context.Journees.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Journees'  is null.");
         }
 
         // GET: Journees/Details/5
@@ -34,7 +34,7 @@ namespace AspTalbrat.Controllers
                 return NotFound();
             }
 
-            var journee = await _context.Journees
+            var journee = await _context.Journees.Include(p => p.Paiements)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (journee == null)
             {
@@ -54,15 +54,40 @@ namespace AspTalbrat.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-       [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<JsonResult> Create([FromBody] JourneeViewModel data)
         {
             //using var bodyReader = new StreamReader(HttpContext.Request.Body);
-            
+
             if (!ModelState.IsValid)
-                return new JsonResult(new {errors = "errors",details = ModelState });
-           
+                return new JsonResult(new { errors = "errors", details = ModelState });
+            if (ModelState.IsValid)
+            {
+                var journee = new Journee
+                {
+                    Date = data.Date,
+                    Numero = data.Numero,
+                    Note = data.Note,
+                };
+                _context.Journees.Add(journee);
+                await _context.SaveChangesAsync();
+
+                foreach (var paiement in data.Paiements)
+                {
+                    _context.Paiements.Add(new JourneePaiement
+                    {
+                        JourneeId = journee.Id,
+                        Libelle = paiement.Libelle,
+                        Montant = paiement.Montant
+                    });
+                    await _context.SaveChangesAsync();
+                }
+
+                return new JsonResult("ok");
+            }
             return new JsonResult(data);
+
+
             /*
             if (ModelState.IsValid)
             
@@ -157,14 +182,14 @@ namespace AspTalbrat.Controllers
             {
                 _context.Journees.Remove(journee);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool JourneeExists(int id)
         {
-          return (_context.Journees?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Journees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

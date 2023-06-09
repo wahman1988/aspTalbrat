@@ -17,6 +17,10 @@
                             </div>
                         </template>
                         <div class="mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input x-model="date" type="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
                             <label for="journee" class="form-label">Journee</label>
                             <input x-model="numero" type="number" class="form-control">
                         </div>
@@ -87,6 +91,7 @@
         function state() {
             return {
                 errors: false,
+                date:'',
                 numero: 0,
                 note: '',
                 fields: [
@@ -114,6 +119,7 @@
                 postData() {
                     const self = this;
                     axios.post('/Journees/Create', {
+                        Date :self.date,
                         Numero: self.numero,
                         Note: self.note,
                         Paiements: self.fields
@@ -127,6 +133,7 @@
                             } else {
                                 self.errors = false
                                 self.resetData()
+                              window.location.href = '/Journees';
                             }
                         })
                         .catch(function (error) {
